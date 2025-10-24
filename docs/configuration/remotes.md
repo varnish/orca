@@ -1,6 +1,6 @@
 # Remotes configuration
 
-`remotes` are configured per [Vritual Registry](./
+`remotes` are configured per [Vritual Registry](./virtual-registry.md
 )`:
 
 ```yaml

@@ -35,11 +35,11 @@ Configuration files are applied in order of appearance. If two config files defi
 
 The YAML configuration is divided into the following sections:
 
-### [`virtual_registry`](./vitual-registry.md)
+### [`virtual_registry`](./virtual-registry.md)
 
 Configure one or more virtual registries.
 
-- [`registries`](./vitual-registry.md#registries-list)
+- [`registries`](./virtual-registry.md#registries-list)
 
 ### [`remotes`](./remotes.md)
 
