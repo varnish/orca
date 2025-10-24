@@ -102,6 +102,22 @@ varnish:
 
 Path to a private key PEM file. If specified, a `cert` must be specified as well.
 
+#### `self_signed` *string*
+
+```yaml
+varnish:
+  https:
+  - port: 443
+    certificates:
+    - self_signed: "localhost"
+    - self_signed: "*.localhost"
+    - self_signed: "example.com"
+```
+
+Generate a self-signed certificate. This is useful for testing with clients that accept non-trusted certificates. Supports wildcards for wildcard TLS certificates.
+
+For automatic trusted TLS, see [ACME](acme.md).
+
 ## `storage` *list*
 
 *Note: Enterprise feature*
