@@ -1,7 +1,7 @@
 # Remotes configuration
 
-`remotes` are configured per [Vritual Registry](./virtual-registry.md
-)`:
+Configuration of remotes for [`virtual_registry`](./virtual-registry.md
+).
 
 ```yaml
 virtual_registry:
@@ -16,6 +16,20 @@ Remotes are selected according to the defined `load_balancer` policy (`fallback`
 - We get a non-5xx response from the remote.
 - We have retried `varnish.params.max_retries` times.
 - We have tried all the remotes.
+
+**`remotes:`**
+
+- [`url` *string*](#url-string)
+- [`priority` *integer*](#priority-integer)
+- [`weight` *number*](#weight-number)
+- [`probe`](#probe)
+  - [`url` *string*](#url-string-1)
+  - [`interval` *number*](#interval-number)
+  - [`timeout` *number*](#timeout-number)
+  - [`expected_response` *integer*](#expected_response-integer)
+  - [`window` *integer*](#window-integer)
+  - [`threshold` *integer*](#threshold-integer)
+  - [`tcponly` *boolean*](#tcponly-boolean)
 
 ## `url` *string*
 

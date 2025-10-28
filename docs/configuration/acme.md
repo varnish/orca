@@ -3,6 +3,23 @@
 
 Configuration for the ACME automated TLS certificate resolver.
 
+```yaml
+acme:
+  email: foo@example.com
+  domains:
+  - example.com
+```
+
+**`acme:`**
+
+- [`email` *string*](#email-string)
+- [`domains` *list*](#domains-list)
+- [`ca_server` *string*](#ca_server-string)
+- [`http_port` *integer*](#http_port-integer)
+- [`renew_before_days` *integer*](#renew_before_days-integer)
+- [`fetch_timeout_sec` *integer*](#fetch_timeout_sec-integer)
+
+
 ## `email` *string*
 
 ```yaml

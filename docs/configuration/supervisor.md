@@ -2,6 +2,13 @@
 
 Configuration for the Varnish Supervisor itself.
 
+**`supervisor:`**
+
+- [`log_output` *string*](#log_output-string)
+- [`log_level` *string*](#log_level-string)
+- [`work_dir` *string*](#work_dir-string)
+
+
 ## `log_output` *string*
 
 ```yaml

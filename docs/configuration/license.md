@@ -2,6 +2,15 @@
 
 Configuration for the Enterprise License. The license unlocks Enterprise functionality not available in the free version.
 
+```yaml
+license:
+  file: /etc/varnish-supervisor/license.lic
+```
+
+**`license:`**
+- [`text` *string*](#text-string)
+- [`file` *string*](#file-string)
+
 ## `text` *string*
 
 ```yaml

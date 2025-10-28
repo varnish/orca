@@ -1,5 +1,7 @@
 # OpenTelemetry Configuration
 
+Configuration for the integrated OpenTelemetry exporter. A recognizable `service_name` should be set, and at least one `endpoint`. All other parameters are optional.
+
 ```yaml
 otel:
   service_name: example
@@ -7,7 +9,17 @@ otel:
     endpoint: http://prometheus:9090/api/v1/otlp/v1/metrics
 ```
 
-Configuration for the integrated OpenTelemetry exporter. A recognizable `service_name` should be set, and at least one `endpoint`. All other parameters are optional.
+**`otel:`**
+
+- [`service_name` *string*](#service_name-string)
+- [`metrics`](#metrics)
+  - [`endpoint` *string*](#endpoint-string)
+  - [`protocol` *string*](#protocol-string)
+  - [`export_interval` *integer*](#export_interval-integer)
+- [`tracing`](#tracing)
+  - [`endpoint` *string*](#endpoint-string-1)
+  - [`protocol` *string*](#protocol-string-1)
+  - [`export_interval` *integer*](#export_interval-integer-1)
 
 ## `service_name` *string*
 
