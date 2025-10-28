@@ -1,5 +1,10 @@
 # Supervisor Configuration
 
+```yaml
+supervisor:
+  log_level: error
+```
+
 Configuration for the Varnish Supervisor itself.
 
 **`supervisor:`**
