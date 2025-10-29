@@ -1,0 +1,5 @@
+services:
+  orca:
+    image: varnish/orca
+    ports:
+      - "80:80"
