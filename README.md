@@ -2,10 +2,10 @@
 
 Varnish Orca is a *Virtual Registry Manager* designed to proxy public and private artifact registries (DockerHub, NPM, PyPi, GitHub, Artifactory, etc.) and cache them close to developers and CI/CD pipelines.
 
-**Try it yourself:** Start Varnish Orca on your own machine:
+## Getting Started
 
 ```sh
-docker run --rm --name orca -p 80:80 -p 443:443 varnish/orca
+docker run -p 80:80 varnish/orca
 ```
 
 Then try pulling the `node` Docker image twice:
@@ -24,16 +24,14 @@ virtual_registry:
   - name: dockerhub
     default: true
     remotes:
-    - https://docker.io
+    - url: https://docker.io
+    - url: https://mirror.gcr.io
+
 ```
 
-You can change the default registry or add additional registries to the list, which become available at subdomains determined by their `name`.
+This is using `docker.io` as the main registry with a fallback to Google's mirror in case DockerHub goes down. You can change the default registry or add additional registries to the list, which become available at subdomains determined by their `name`.
 
-## Getting Started
-
-See [the installation guide](./docs/getting-started.md) for how to deploy on Kubernetes or install on different Linux distributions.
-
-
+See [the installation guide](./docs/installation.md) for deploying the Docker image or installing on Debian/Ubuntu and RHEL/CentOS.
 
 ## Feature Highlights
 
@@ -42,19 +40,19 @@ See [the installation guide](./docs/getting-started.md) for how to deploy on Kub
 - **Push and pull:** Uploads are proxied through Varnish while downloads are streamed to the client and cached at the same time.
 - **Deploy anywhere:** Runs on pretty much any x86-based linux machine.
 - **Extensive artifact support**: Support for OCI, NPM, Git, Go, and many more.
-- **Automatic TLS:** Built-in ACME certificate resolver.
+- **Automatic TLS:** Built-in ACME certificate resolver and updater.
 - **Observability:** Integrated OpenTelemetry metrics exporter.
 
 ### Enterprise:
 
-- **Cache private repositories safely:** Automatic access control integration for private repositories.
+- **Cache private repositories:** Automatic access control integration for private repositories.
 - **Persisted cache:** Extend and persist the memory cache with Massive Storage Engine (MSE).
 - **OpenTelemetry Tracing:** Observe requests as they flow through your network.
 - **Programmable:** Apply your own logic to the request handling with Varnish Configuration Language (VCL).
 
 ## Behind the scenes
 
-Varnish Orca is built with two major components:
+Varnish Orca is built with two distinct components:
 
 - **Varnish Enterprise**: [High performance](https://www.varnish-software.com/about-us/press/varnish-intel-achieve-breakthrough-in-cdn-efficiency/) cache and reverse proxy, written in C.
 - **Varnish Supervisor**: Control process and integration layer, written in go.
@@ -65,7 +63,7 @@ The process tree looks like this: the `supervisor` starts `varnishd`, which in t
 supervisor───varnishd───cache-main
 ```
 
-Varnish Orca is a subsystem of the Supervisor. You configure it through the Supervisor [virtual_registry](./docs/configuration/virtual-registry.md) configuration section which, when used, configures Varnish as a Virtual Registry.
+Varnish Orca is a subsystem of the Supervisor containing all the logic needed to operate Varnish as a Virtual Registry. See the [virtual_registry](./docs/configuration/virtual-registry.md) configuration section for how to configure Virtual Registries.
 
 ## Why use a Virtual Registry?
 
