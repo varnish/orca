@@ -20,3 +20,5 @@ Welcome to the documentation for **Varnish Orca**. This documentation will help 
   - [ACME TLS](./configuration/acme.md)
   - [OpenTelemetry](./configuration/otel.md)
   - [License](./configuration/license.md)
+
+![virtual-registry](../media/virtual-registry.svg)
