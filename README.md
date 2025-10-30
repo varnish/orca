@@ -73,9 +73,13 @@ Varnish Orca is a subsystem of the Supervisor containing all the logic needed to
 
 **CTOs** choose Virtual Registries because they reduce egress fees, license costs, and increase developer productivity.
 
+## License
+
+Varnish Orca Community Edition has an embedded license that lasts for one year after release. When the license expires, Varnish will stop accepting traffic. It is therefore recommended to upgrade to the latest version frequently, as each release has a one year "expiry date" from time of release.
+
 ## Upgrade to Enterprise
 
-The cost model is simple: Varnish Orca is free to use for public registries, with an Enterprise edition supporting private registries and features like Persisted Cache, OpenTelemetry Tracing and programmability with VCL.
+The cost model is simple: Varnish Orca Community Edition is free to use for public registries, with an Enterprise edition supporting private registries and features like Persisted Cache, OpenTelemetry Tracing and programmability with VCL.
 
 Contact sales@varnish-software.com for a quote.
 
