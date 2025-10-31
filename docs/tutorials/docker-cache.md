@@ -1,18 +1,25 @@
-# Docker Cache
+# Docker Cache Tutorial
 
-This tutorial assumes you have Varnish Orca running on your local machine, see [the installation guide](../installation.md) for setup instructions.
+This tutorial covers different ways to use Varnish Orca as a Docker image pull-through cache.
 
-The [default configuration](../default-configuration.md) includes a Virtual Registry for DockerHub, which we are going to use and modify during the course of this tutorial.
-
+- [Prerequisites](#prerequisites)
 - [DockerHub is the default registry](#dockerhub-is-the-default-registry)
-- [Pull a Docker image through the Virtual Registry](#pull-a-docker-image-through-the-virtual-registry)
+- [Pulling Images](#pulling-images)
+- [Pushing Images](#pushing-images)
 - [Configure the Virtual Registry as a DockerHub Mirror](#configure-the-virtual-registry-as-a-dockerhub-mirror)
 - [Adding additional registries](#adding-additional-registries)
 - [Multiple Registry Remotes](#multiple-registry-remotes)
 - [Cache Policy](#cache-policy)
 - [Private Docker Registries](#private-docker-registries)
 
+## Prerequisites
+
+- A x86-based Linux machine
+- Varnish Orca installed. See [the installation guide](../installation.md) for instructions.
+
 ## DockerHub is the default registry
+
+The [default configuration](../default-configuration.md) includes a Virtual Registry for DockerHub, which we are going to use and modify during the course of this tutorial.
 
 The default Virtual Registry is DockerHub, determined by `default: true`:
 
@@ -28,7 +35,9 @@ virtual_registry:
 
 All traffic is directed to this Virtual Registry unless the request's subdomain matches the name of any of the other registries in the configuration.
 
-## Pull a Docker image through the Virtual Registry
+## Pulling Images
+
+Images are cached by Varnish as they are streamed through the cache.
 
 Run the following `docker pull`:
 
@@ -77,6 +86,10 @@ This image has 10 layers, so we should see our cache hit count go up by 10 every
 sudo varnishstat -1 | grep ACCG.dockerhub.total.client_hit_count
 ACCG.dockerhub.total.client_hit_count                            10         0.00 Number of client request hits
 ```
+
+## Pushing Images
+
+Images can be pushed to the Virtual Registry like normal, and will be passed through to the remote registry. The Virtual Registry does not cache images on push, only on pull.
 
 ## Configure the Virtual Registry as a DockerHub Mirror
 
