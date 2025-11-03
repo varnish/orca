@@ -127,3 +127,27 @@ virtual_registry:
     remotes:
     - url: https://gitlab.com
 ```
+
+## How do I know if my license was loaded by Orca?
+
+Orca uses *Varnish Supervisor* under the hood to manage the service. Varnish Supervisor logs to *STDOUT*.
+
+Your *STDOUT* may contain the following log lines:
+
+```
+time=2025-11-03T10:00:36.058+01:00 level=INFO msg="License: Private registry cache enabled"
+time=2025-11-03T10:00:36.058+01:00 level=INFO msg="License: Persistent cache enabled"
+time=2025-11-03T10:00:36.058+01:00 level=INFO msg="License: OpenTelemetry tracing enabled"
+time=2025-11-03T10:00:36.058+01:00 level=INFO msg="License: Custom registry VCL enabled"
+time=2025-11-03T10:00:36.058+01:00 level=INFO msg="License: Git Mirror enabled"
+time=2025-11-03T10:00:36.058+01:00 level=INFO msg="License: Expires 2026-10-09"
+```
+
+These logs lines mention the extra capabilities that are enabled, along with the expiration date of the license.
+
+Extracting this information from Orca depends on the deployment platform that was used:
+
+* In a Docker container you can run `docker logs orca` to display the license information
+* In a `docker compose` setup you can run `docker compose logs orca` to display the license information
+* In a Kubernetes setup you can run `kubectl logs <pod>` where `<pod>` refers to the name of the pod
+* On a standard Linux server you can run `journalctl -u varnish-supervisor` to display the license information
