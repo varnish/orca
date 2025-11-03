@@ -41,6 +41,7 @@ services:
     volumes:
         - ./config.yaml:/app/config.yaml:ro
         - ./license.lic:/app/license.lic:ro
+    command: --config /app/config.yaml
 ```
 
 Before running `docker compose up`, make sure the following lines are added to `config.yaml`:
@@ -59,17 +60,17 @@ kubectl create secret generic orca-license \
 --from-file=./license.lic
 ```
 
-And then simply add a `license` section to the `supervisorConfig` of your `values.yaml` file and point it to the secret you just created:
+And then simply add a `license` section to the `orca` of your `values.yaml` file and point it to the secret you just created:
 
 ```yaml
-supervisorConfig:
+orca:
   license:
     secret: orca-license
 ```
 
 Re-deploy the Helm release and the secret containing the license should be mounted into the pod and used by Orca.
 
-Alternatively, you could add a `--set "supervisorConfig.license.secret=orca-license"` argument directly to your `helm install` command.
+Alternatively, you could add a `--set "orca.license.secret=orca-license"` argument directly to your `helm install` command.
 
 ## Linux
 
