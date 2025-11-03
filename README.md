@@ -1,6 +1,14 @@
+<p align="center">
+  <img src="./media/varnish-orca.svg" width="250" alt="Varnish Orca Logo">
+</p>
+
 # Varnish Orca
 
-Varnish Orca is a *Virtual Registry Manager* designed to proxy public and private artifact registries (DockerHub, NPM, PyPi, GitHub, Artifactory, etc.) and cache them close to developers and CI/CD pipelines.
+Varnish Orca is a **Virtual Registry Manager** that consolidates and accelerates registries for build & runtime artifacts.
+
+By caching Docker Images, NPM Packages, Helm Charts, Go Modules, and many more, Orca speeds up CI/CD pipelines, reduces developer friction, and lowers operational costs.
+
+Orca can safely cache both public and private registries, with automatic access control integration for most repository managers like Artifactory, Nexus, and Google Artifact Registry.
 
 ## Getting Started
 
@@ -26,7 +34,6 @@ virtual_registry:
     remotes:
     - url: https://docker.io
     - url: https://mirror.gcr.io
-
 ```
 
 This is using `docker.io` as the main registry with a fallback to Google's mirror in case DockerHub goes down. You can change the default registry or add additional registries to the list, which become available at subdomains determined by their `name`.
