@@ -78,7 +78,7 @@ Metrics export interval in seconds.
 
 ## `tracing`
 
-*Note: Enterprise feature*
+*Note: Orca Premium feature*
 
 ### `endpoint` *string*
 

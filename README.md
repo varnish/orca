@@ -50,7 +50,7 @@ See [the installation guide](./docs/installation.md) for deploying the Docker im
 - **Automatic TLS:** Built-in ACME certificate resolver and updater.
 - **Observability:** Integrated OpenTelemetry metrics exporter.
 
-### Enterprise:
+### Orca Premium:
 
 - **Cache private repositories:** Automatic access control integration for private repositories.
 - **Persisted cache:** Extend and persist the memory cache with Massive Storage Engine (MSE).
@@ -84,9 +84,9 @@ Varnish Orca is a subsystem of the Supervisor containing all the logic needed to
 
 Varnish Orca Community Edition has an embedded license that lasts for one year after release. When the license expires, Varnish will stop accepting traffic. It is therefore recommended to upgrade to the latest version frequently, as each release has a one year "expiry date" from time of release.
 
-## Upgrade to Enterprise
+## Upgrade to Premium
 
-The cost model is simple: Varnish Orca Community Edition is free to use for public registries, with an Enterprise edition supporting private registries and features like Persisted Cache, OpenTelemetry Tracing and programmability with VCL.
+The cost model is simple: Varnish Orca Community Edition is free to use for public registries, with a Premium edition supporting private registries and features like Persisted Cache, OpenTelemetry Tracing and programmability with VCL.
 
 Contact sales@varnish-software.com for a quote.
 

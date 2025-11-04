@@ -137,7 +137,7 @@ For automatic trusted TLS, see [ACME](acme.md).
 
 ## `storage` *list*
 
-*Note: Enterprise feature*
+*Note: Orca Premium feature*
 
 Configure a persistent cache for Varnish to use. This will generate the appropriate MSE 4 configuration and initialize it with `mkfs.mse4`. Changes to the config will be applied upon restart of the Supervisor.
 

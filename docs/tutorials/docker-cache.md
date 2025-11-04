@@ -192,7 +192,7 @@ In addition, all Docker blobs (image layers) share the same cache namespace as t
 
 ## Private Docker Registries
 
-*Note: This is an enterprise-only feature.*
+*Note: Enterprise feature*
 
 The Virtual Registry can also cache Docker images in private registries while maintaining access control. This happens automatically, with no extra configuration required.
 

@@ -1,6 +1,6 @@
 # License Configuration
 
-Configuration for the Enterprise License. The license unlocks Enterprise functionality not available in the free version.
+Configuration for the Premium License. The license unlocks Orca Premium functionality not available in the free version.
 
 ```yaml
 license:

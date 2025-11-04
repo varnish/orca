@@ -70,7 +70,7 @@ The load balancing policy to use when there are multiple remotes.
 
 ### `auth_ttl` *number*
 
-*Note: Enterprise feature*
+*Note: Orca Premium feature*
 
 ```yaml
 virtual_registry:
@@ -85,7 +85,7 @@ The number of seconds to cache each users authorization per artifact. Setting th
 
 ### `extra_vcl` *list*
 
-*Note: Enterprise feature*
+*Note: Orca Premium feature*
 
 ```yaml
 virtual_registry:
