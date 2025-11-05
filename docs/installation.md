@@ -17,7 +17,7 @@
 	- [Step 4: Customize configuration (Optional)](#step-4-customize-configuration-optional)
 - [Troubleshooting](#troubleshooting)
 	- [Check that Varnish is accepting traffic](#check-that-varnish-is-accepting-traffic)
-    - [Insecure Registry](#insecure-registry
+    - [Insecure Registry](#insecure-registry)
 
 ## Docker
 
