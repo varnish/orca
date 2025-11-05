@@ -166,3 +166,20 @@ Connection: keep-alive
 
 The default configuration has Varnish listening for HTTP traffic on port `80`. If you have changed this to a different port, make sure to curl the right port and protocol (use `https://` for HTTPS endpoints).
 
+### Unsecure Registry
+On Mac (and probably Windows), where docker is actually a linux-vm under the hood, you have to add `localhost` as a unsecure registry.
+
+**On docker host**
+`/etc/docker/daemon.json`
+{
+	"insecure-registries": ["localhost:80","docker.localhost:80"]
+}
+
+**Colima**
+`.colima/default/colima.yaml`
+```
+docker:
+  insecure-registries:
+    - localhost:80
+    - docker.localhost:80
+```
