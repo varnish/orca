@@ -17,6 +17,7 @@
 	- [Step 4: Customize configuration (Optional)](#step-4-customize-configuration-optional)
 - [Troubleshooting](#troubleshooting)
 	- [Check that Varnish is accepting traffic](#check-that-varnish-is-accepting-traffic)
+    - [Insecure Registry](#insecure-registry
 
 ## Docker
 
@@ -166,14 +167,16 @@ Connection: keep-alive
 
 The default configuration has Varnish listening for HTTP traffic on port `80`. If you have changed this to a different port, make sure to curl the right port and protocol (use `https://` for HTTPS endpoints).
 
-### Unsecure Registry
-On Mac (and probably Windows), where docker is actually a linux-vm under the hood, you have to add `localhost` as a unsecure registry.
+### Insecure Registry
+On Mac (and probably Windows), where docker is actually a linux-vm under the hood, you have to add `localhost` as a insecure registry.
 
 **On docker host**
 `/etc/docker/daemon.json`
+```
 {
 	"insecure-registries": ["localhost:80","docker.localhost:80"]
 }
+```
 
 **Colima**
 `.colima/default/colima.yaml`
@@ -183,3 +186,4 @@ docker:
     - localhost:80
     - docker.localhost:80
 ```
+On Docker Desktop and Podman and other GUI tools this is usually a field under preferences. Find it and add `localhost:80` as `Insecure Registry`
