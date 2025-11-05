@@ -172,18 +172,17 @@ On Mac (and probably Windows), where docker is actually a linux-vm under the hoo
 
 **On docker host**
 `/etc/docker/daemon.json`
-```
+```json
 {
-	"insecure-registries": ["localhost:80","docker.localhost:80"]
+	"insecure-registries": [ "localhost:80" ]
 }
 ```
 
 **Colima**
 `.colima/default/colima.yaml`
-```
+```yaml
 docker:
   insecure-registries:
     - localhost:80
-    - docker.localhost:80
 ```
 On Docker Desktop and Podman and other GUI tools this is usually a field under preferences. Find it and add `localhost:80` as `Insecure Registry`
