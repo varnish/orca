@@ -17,7 +17,7 @@
 	- [Step 4: Customize configuration (Optional)](#step-4-customize-configuration-optional)
 - [Troubleshooting](#troubleshooting)
 	- [Check that Varnish is accepting traffic](#check-that-varnish-is-accepting-traffic)
-    - [Insecure Registry](#insecure-registry)
+	- [Insecure Registry](#insecure-registry)
 
 ## Docker
 
@@ -27,7 +27,7 @@
 docker run -p 80:80 varnish/orca
 ```
 
-Varnish should now be listening to port 80 with the [default configuration]().
+Varnish should now be listening to port `80` with the [default configuration](default-configuration.md).
 
 ### Step 2: Customize configuration (Optional)
 

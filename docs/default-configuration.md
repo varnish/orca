@@ -25,6 +25,9 @@ virtual_registry:
   - name: npmjs
     remotes:
     - url: https://registry.npmjs.org
+  - name: go
+    remotes:
+    - url: https://proxy.golang.org
   - name: github
     remotes:
     - url: https://github.com
