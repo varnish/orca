@@ -30,7 +30,7 @@ varnish:
 ```
 
 * This example will load a combined PEM file that is stored in `/certs/combined.pem`.
-* It will load another certificate from `/certs/tls.crt` for which the private key is stored in `/certs.tls.key`.
+* It will load another certificate from `/certs/tls.crt` for which the private key is stored in `/certs/tls.key`.
 * A third certificate will be generated and self-signed for the `docker.localhost` domain.
 
 Orca's SNI feature will ensure the right certificate is matched for the requested hostname.
