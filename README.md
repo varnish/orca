@@ -8,7 +8,7 @@ Varnish Orca is a **Virtual Registry Manager** that consolidates and accelerates
 
 By caching Docker Images, NPM Packages, Helm Charts, Go Modules, and many more, Orca speeds up CI/CD pipelines, reduces developer friction, and lowers operational costs.
 
-Orca can safely cache both public and private registries, with automatic access control integration for most repository managers like Artifactory, Nexus, and Google Artifact Registry.
+Varnish Orca is free to use, with a Premium license upgrade that enables private repository caching, persisted cache, and more.
 
 ## Getting Started
 
@@ -52,7 +52,7 @@ See [the installation guide](./docs/installation.md) for deploying the Docker im
 
 ### Orca Premium:
 
-- **Cache private repositories:** Automatic access control integration for private repositories.
+- **Cache private repositories:** Automatic access control integration for private repositories like Artifactory, Nexus, and Google Artifact Registry.
 - **Persisted cache:** Extend and persist the memory cache with Massive Storage Engine (MSE).
 - **OpenTelemetry Tracing:** Observe requests as they flow through your network.
 - **Programmable:** Apply your own logic to the request handling with Varnish Configuration Language (VCL).
@@ -82,7 +82,9 @@ Varnish Orca is a subsystem of the Supervisor containing all the logic needed to
 
 ## License
 
-Varnish Orca has an embedded license that lasts for one year after release. When the license expires, Varnish will stop accepting traffic. It is therefore recommended to upgrade to the latest version frequently, as each release has a one year "expiry date" from time of release.
+Each release of Varnish Orca has a free embedded license that lasts for one year after release date. To keep using Orca for free, you just have to upgrade Orca at least once per year.
+
+If you have purchased a Premium license, see [instructions for installing the license](./docs/tutorials/license.md).
 
 ## Upgrade to Premium
 
