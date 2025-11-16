@@ -4,11 +4,13 @@
 
 # Varnish Orca
 
-Varnish Orca is a **Virtual Registry Manager** that consolidates and accelerates registries for build & runtime artifacts.
+Varnish Orca is a **Virtual Registry Manager**: a high-performance pull-through cache for package registries. It runs anywhere to dramatically speed up pulls, clones, and downloads for both developers and CI/CD workflows.
 
-By caching Docker Images, NPM Packages, Helm Charts, Go Modules, and many more, Orca speeds up CI/CD pipelines, reduces developer friction, and lowers operational costs.
+Orca outperforms traditional repository managers and mirrors by leveraging Varnish to cache packages directly at the HTTP layer. Clients requesting the same package receive the the same response from Varnish's memory or disk cache, bypassing the need for package indexing, a database, or a complex application server.
 
-Varnish Orca is free to use, with a Premium license upgrade that enables private repository caching, persisted cache, and more.
+Getting started is simple: define a Virtual Registry with Orca, then configure your clients to pull from it. For private repositories, Orca remains completely transparent. Clients continue to use their existing credentials, and Orca performs authorization checks against the upstream registry before serving any content from the cache.
+
+Varnish Orca is free to use. A Premium license is available, which enables private repository caching, a persistent disk cache, and additional enterprise features.
 
 ## Getting Started
 
