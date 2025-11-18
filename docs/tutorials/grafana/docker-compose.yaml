@@ -1,0 +1,142 @@
+version: "3.8"
+
+# Complete observability stack for Varnish Orca monitoring
+# This includes Orca, Prometheus, Tempo, and Grafana with the Varnish metrics dashboard
+
+configs:
+  orca_config:
+    content: |
+      # Optional: Enable tracing by adding your license file
+      # Metrics work without a license - tracing requires sup-otel + vmod-otel addons
+      # Get a trial license at: https://info.varnish-software.com/orca
+      #
+      # Steps to enable tracing:
+      # 1. Uncomment the volumes section below and mount your license file
+      # 2. Uncomment this license config:
+      #license:
+      #  file: /app/license.lic
+
+      virtual_registry:
+        registries:
+        - name: dockerhub
+          default: true
+          remotes:
+          - url: https://docker.io
+          - url: https://mirror.gcr.io
+        - name: quay
+          remotes:
+          - url: https://quay.io
+        - name: ghcr
+          remotes:
+          - url: https://ghcr.io
+        - name: k8s
+          remotes:
+          - url: https://registry.k8s.io
+        - name: npmjs
+          remotes:
+          - url: https://registry.npmjs.org
+        - name: go
+          remotes:
+          - url: https://proxy.golang.org
+        - name: github
+          remotes:
+          - url: https://github.com
+        - name: gitlab
+          remotes:
+          - url: https://gitlab.com
+
+      otel:
+        service_name: varnish-orca
+        # Metrics are always available (no license required)
+        metrics:
+          enabled: true
+          endpoint: http://prometheus:9090/api/v1/otlp/v1/metrics
+          protocol: http/protobuf
+          export_interval: 15
+        # Tracing requires license with sup-otel + vmod-otel addons (Premium feature)
+        tracing:
+          enabled: true
+          endpoint: http://tempo:4318/v1/traces
+          protocol: http/protobuf
+  prometheus_config:
+    file: ./prometheus.yaml
+  tempo_config:
+    file: ./tempo.yaml
+  grafana_datasources:
+    file: ./datasources.yaml
+  grafana_dashboards_config:
+    file: ./dashboards.yaml
+  varnish_dashboard:
+    file: ../../../dashboards/varnish_metrics.json
+
+services:
+  orca:
+    image: varnish/orca
+    ports:
+      - "80:80"
+    environment:
+      - SUPERVISOR_CONFIG=/etc/varnish-orca/config.yaml
+    configs:
+      - source: orca_config
+        target: /etc/varnish-orca/config.yaml
+    # Uncomment to enable tracing with your license file:
+    # volumes:
+    #   - ./license.lic:/app/license.lic:ro
+    depends_on:
+      - prometheus
+      - tempo
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    ports:
+      - "9090:9090"
+    configs:
+      - source: prometheus_config
+        target: /etc/prometheus/prometheus.yaml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yaml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      - --enable-feature=otlp-write-receiver
+      - --web.enable-remote-write-receiver
+      - --enable-feature=native-histograms
+    volumes:
+      - prometheus-data:/prometheus
+
+  tempo:
+    image: grafana/tempo:latest
+    command: "-config.file=/etc/tempo.yaml"
+    ports:
+      - "3200:3200" # Tempo
+      - "4318:4318" # OTLP HTTP receiver
+    configs:
+      - source: tempo_config
+        target: /etc/tempo.yaml
+    volumes:
+      - tempo-data:/var/tempo
+
+  grafana:
+    image: grafana/grafana-enterprise:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/varnish_metrics.json
+    configs:
+      - source: grafana_datasources
+        target: /etc/grafana/provisioning/datasources/datasources.yaml
+      - source: grafana_dashboards_config
+        target: /etc/grafana/provisioning/dashboards/dashboards.yaml
+      - source: varnish_dashboard
+        target: /etc/grafana/provisioning/dashboards/varnish_metrics.json
+    volumes:
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+      - tempo
+
+volumes:
+  prometheus-data:
+  tempo-data:
+  grafana-data:
