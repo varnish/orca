@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./media/varnish-orca.svg" width="250" alt="Varnish Orca Logo">
+  <img src="https://raw.githubusercontent.com/varnish/orca/refs/heads/main/media/varnish-orca.svg" width="250" alt="Varnish Orca Logo">
 </p>
 
 # Varnish Orca
