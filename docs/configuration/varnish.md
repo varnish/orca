@@ -17,13 +17,12 @@ General configuration for Varnish. At least one `http` or `https` listen endpoin
   - [`port` *integer*](#port-integer-1)
   - [`address` *string*](#address-string-1)
   - [`certificates` *list*](#certificates-list)
-- [`storage` *list*](#storage-list)
-  - [`location` *string*](#location-string)
-  - [`size` *string*](#size-string)
-- [`admin_port`](#admin_port)
-- [`path` *string*](#path-string)
-- [`params` *list*](#params-list)
-
+- [`storage`](#storage)
+  - [`stores` *list*](#stores-list)
+  - [`default_category` *string*](#default_category-string)
+- [`admin_port` *integer*](#admin_port-integer)
+- [`path` *string*](#path-string-1)
+- [`params`](#params)
 
 ## `http` *list*
 
@@ -135,35 +134,148 @@ Generate a self-signed certificate. This is useful for testing with clients that
 
 For automatic trusted TLS, see [ACME](acme.md).
 
-## `storage` *list*
+## `storage`
 
 *Note: Orca Premium feature*
 
-Configure a persistent cache for Varnish to use. This will generate the appropriate MSE 4 configuration and initialize it with `mkfs.mse4`. Changes to the config will be applied upon restart of the Supervisor.
+Configure a persistent cache for Varnish to use. This will generate the appropriate Massive Storage Engine (MSE) 4 configuration and initialize it with `mkfs.mse4`. Changes to the config will be applied upon restart of the Supervisor.
 
-### `location` *string*
+### `stores` *list*
 
-```yaml
-varnish:
-  storage:
-  - location: /etc/varnish-supervisor/storage/disk1
-    size: 1000G
-```
+A list of stores for the persisted cache. A [store](https://docs.varnish-software.com/varnish-enterprise/features/mse_4/persisted/#the-store) appears as a single large file on the file system and is used to persist chunks of cached objects.
 
-Path to directory where the the storage should be created. The backing storage must have space to fit `size` bytes. Each storage must have a `location` and a `size`.
+An auxiliary file called a [book](https://docs.varnish-software.com/varnish-enterprise/features/mse_4/persisted/#the-book) is created alongside the store, which keeps track of where the object chunks in the store are and other metadata such as cache invalidation keys and checksums for durable storage.
 
-### `size` *string*
+Each store must have a `name`, `path` and `size`.
+
+#### `name` *string*
 
 ```yaml
 varnish:
   storage:
-  - location: /etc/varnish-supervisor/storage/disk1
-    size: 1000G
+    stores:
+    - name: disk1
+      path: /etc/varnish-supervisor/storage/disk1
+      size: 1000G
 ```
 
-The size of storage to create. Appropriate MSE 4 books and store sizes are calculated based on this number. Each storage must have a `location` and a `size`.
+The unique identifying name for this store.
 
-## `admin_port`
+#### `path` *string*
+
+```yaml
+varnish:
+  storage:
+    stores:
+    - name: disk1
+      path: /etc/varnish-supervisor/storage/disk1
+      size: 1000G
+```
+
+Path to a directory where the the store and book files will be created at Supervisor startup. The backing storage must have space to fit `size` bytes.
+
+#### `size` *string*
+
+```yaml
+varnish:
+  storage:
+    stores:
+    - name: disk1
+      path: /etc/varnish-supervisor/storage/disk1
+      size: 1000G
+```
+
+Size of the store to create. Available case-insensitive units are `K`, `M`, `G`, and `T`.
+
+The size includes the size of the book (`5G` by default) and filesystem overhead (`1G`), so the size of the store file can be calculated as:
+
+```
+store_size = size - book_size - 1G.
+```
+
+Must be larger than `book_size` + `1G`.
+
+#### `book_size` *string*
+
+```yaml
+varnish:
+  storage:
+    stores:
+    - name: disk1
+      path: /etc/varnish-supervisor/storage/disk1
+      size: 1000G
+      book_size: 2G
+```
+
+**Default:** `5G`
+
+Change the size of a store's [book](https://docs.varnish-software.com/varnish-enterprise/features/mse_4/persisted/#the-book). When the size of a book is increased, the size of the store is decreased, and vice versa.
+
+#### `category` *string*
+
+```yaml
+varnish:
+  storage:
+    default_category: other
+    stores:
+    - name: disk1
+      path: /disk1
+      size: 1000G
+      category: media.video
+    - name: disk2
+      path: /disk2
+      size: 1000G
+      category: media.video
+    - name: icons
+      path: /disk3/icons
+      size: 50G
+      category: media.images.icons
+    - name: pictures
+      path: /disk3/pictures
+      size: 150G
+      category: media.images.pictures
+    - name: other
+      path: /disk3/other
+      size: 800G
+      category: other
+```
+
+Assign a [category](https://docs.varnish-software.com/varnish-enterprise/features/mse_4/categories/) to the store. This reserves the store to be used exclusively for objects of the same category. Multiple stores can have the same category, in which case objects are spread [evenly](https://docs.varnish-software.com/varnish-enterprise/features/mse_4/persisted/#store-selection) over the stores.
+
+Object category can be set in VCL `sub vcl_backend_response` with the `mse4` VMOD:
+
+```vcl
+mse4.set_category("media.video");
+```
+
+If no category has been set in VCL, the category defined by `default_category` is used.
+
+Categories are a tree structure, and each store category must be a leaf-node in that tree. This means that if one store has the category `media.images.icons`, another store cannot have the category `media.images`.
+
+When categories are used, all stores must have a category and `default_category` must be set.
+
+### `default_category` *string*
+
+```yaml
+varnish:
+  storage:
+    default_category: blobs
+    stores:
+    - name: manifests
+      path: /disk1/manifests
+      size: 100G
+      category: manifests
+    - name: objects
+      path: /disk1/objects
+      size: 900G
+      category: objects
+```
+
+The default category to use if no category have been set in VCL.
+
+Required if categories are used.
+
+## `admin_port` *integer*
 
 ```yaml
 varnish:
@@ -185,7 +297,7 @@ varnish:
 
 Path to the `varnishd` binary to use.
 
-## `params` *list*
+## `params`
 
 ```yaml
 varnish:
