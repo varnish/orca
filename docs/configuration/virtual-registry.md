@@ -17,6 +17,9 @@ Configuration for the Virtual Registry. A registry should have a `name` and must
   - [`default` *boolean*](#default-boolean)
   - [`load_balancer` *string*](#load_balancer-string)
   - [`auth_ttl` *number*](#auth_ttl-number)
+  - [`default_ttl` *number*](#default_ttl-number)
+  - [`default_grace` *number*](#default_grace-number)
+  - [`default_keep` *number*](#default_keep-number)
   - [`extra_vcl` *list*](#extra_vcl-list)
   - [`remotes` *list*](#remotes-list)
 
@@ -82,6 +85,51 @@ virtual_registry:
 **Default:** `3600`
 
 The number of seconds to cache each users authorization per artifact. Setting this to `0` causes the users authorization to be checked against the remote registry on every request.
+
+### `default_ttl` *number*
+
+```yaml
+virtual_registry:
+  registries:
+  - name: example
+    default_ttl: 3600
+```
+
+**Default:** `120`
+
+The number of seconds to cache objects that are not otherwise covered by a specific cache policy or considered uncacheable.
+
+Overrides the global [varnish.params.default_ttl](varnish-params.md#default_ttl-number) for this registry.
+
+### `default_grace` *number*
+
+```yaml
+virtual_registry:
+  registries:
+  - name: example
+    default_grace: 3600
+```
+
+**Default:** `10`
+
+The number of seconds to grace objects that are not otherwise covered by a specific cache policy or considered uncacheable.
+
+Overrides the global [varnish.params.default_grace](varnish-params.md#default_grace-number) for this registry.
+
+### `default_keep` *number*
+
+```yaml
+virtual_registry:
+  registries:
+  - name: example
+    default_keep: 3600
+```
+
+**Default:** `0`
+
+The number of seconds to keep stale objects that are not otherwise covered by a specific cache policy or considered uncacheable.
+
+Overrides the global [varnish.params.default_keep](varnish-params.md#default_keep-number) for this registry.
 
 ### `extra_vcl` *list*
 
