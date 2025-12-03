@@ -4,29 +4,107 @@
 
 # Varnish Orca
 
-Varnish Orca is a **Virtual Registry Manager**: a high-performance pull-through cache for package registries. It runs anywhere to dramatically speed up pulls, clones, and downloads for both developers and CI/CD workflows.
+Varnish Orca is a **Virtual Registry Manager**: a fast pull-through cache for artifact registries.
 
-Orca outperforms traditional repository managers and mirrors by leveraging Varnish to cache packages directly at the HTTP layer. Clients requesting the same package receive the the same response from Varnish's memory or disk cache, bypassing the need for package indexing, a database, or a complex application server.
+Deploy it close to your developers and CI/CD pipelines to reduce build times and egress costs.
 
-Getting started is simple: define a Virtual Registry with Orca, then configure your clients to pull from it. For private repositories, Orca remains completely transparent. Clients continue to use their existing credentials, and Orca performs authorization checks against the upstream registry before serving any content from the cache.
+**But why Orca?**
+
+Orca outperforms traditional repository managers by leveraging Varnish Enterprise to cache packages directly at the HTTP layer.
+
+- **No database:** Cutting out the database simplifies setup and removes the most common bottleneck.
+
+- **Transparent:** A Virtual Registry behaves just like its remote counterpart, except downloads complete much faster.
+
+- **Secure:** Keep using your existing credentials, the Virtual Registry automatically checks client authorization with the remote registry.
+
+- **Never runs out of space:** Memory and disk caches are self-regulating. A full cache is a healthy cache.
+
+- **Always up to date:** Package manifests are revalidated against the remote registry every time, instantly detecting changes.
 
 Varnish Orca is free to use. A Premium license is available, which enables private repository caching, a persistent disk cache, and additional enterprise features.
 
 ## Getting Started
 
+*Note: This is a tutorial for users running Linux on an x86 platform.*
+
+As an example of what you can do with Orca, we will use the pre-configured Virtual Registry for DockerHub to cache `docker pull`s.
+
+First, configure your Docker daemon use a registry mirror on `http://localhost`. Open or create `/etc/docker/daemon.json` and add the following JSON:
+
+```json
+{
+  "registry-mirrors": ["http://localhost"]
+}
+```
+
+Restart the Docker daemon for the changes to take effect:
+
+```sh
+sudo systemctl restart docker
+```
+
+Now we are ready to run Orca:
+
 ```sh
 docker run -p 80:80 varnish/orca
 ```
 
-Then try pulling the `node` Docker image twice:
+In another terminal window, run the following command:
 
 ```sh
-for i in {1..2}; do docker rmi localhost/library/node &>/dev/null; time docker pull localhost/library/node; done
+for i in {1..2}; do docker rmi node &>/dev/null; time docker pull node; done
 ```
 
-Unless you have a very fast connection to DockerHub, you should see the second pull take significantly less time as it's served from cache.
+Unless you have a very fast connection to DockerHub, you should see the second pull take significantly less time as it's served from cache:
 
-This works out-of-the-box because Varnish Orca includes configuration for a DockerHub Virtual Registry, which looks like this:
+First Pull:
+
+```
+Using default tag: latest
+latest: Pulling from library/node
+708274aafe49: Pull complete
+8cdff261ed5c: Pull complete
+078b2eece9b2: Pull complete
+a1208d53eb06: Pull complete
+78c780840163: Pull complete
+435cbc1d6a03: Pull complete
+29dd662fc17f: Pull complete
+73d86704c819: Pull complete
+Digest: sha256:7478f3725ef76ce6ba257a6818ea43c5eb7eb5bd424f0c3df3a80ff77203305e
+Status: Downloaded newer image for node:latest
+docker.io/library/node:latest
+
+real    0m32,442s
+user    0m0,087s
+sys     0m0,068s
+```
+
+Second pull:
+
+```
+Using default tag: latest
+latest: Pulling from library/node
+708274aafe49: Pull complete
+8cdff261ed5c: Pull complete
+078b2eece9b2: Pull complete
+a1208d53eb06: Pull complete
+78c780840163: Pull complete
+435cbc1d6a03: Pull complete
+29dd662fc17f: Pull complete
+73d86704c819: Pull complete
+Digest: sha256:7478f3725ef76ce6ba257a6818ea43c5eb7eb5bd424f0c3df3a80ff77203305e
+Status: Downloaded newer image for node:latest
+docker.io/library/node:latest
+
+real    0m11,030s
+user    0m0,024s
+sys     0m0,022s
+```
+
+The remaining time is consumed by the Docker daemon doing a single threaded decompression of each layer. This is done by the Docker daemon, which is why the `user` CPU seconds seems low here.
+
+This works because Orca's [default configuration](./docs/default-configuration.md) includes a Virtual Registry for DockerHub, which looks like this:
 
 ```yaml
 virtual_registry:
@@ -38,59 +116,66 @@ virtual_registry:
     - url: https://mirror.gcr.io
 ```
 
-This is using `docker.io` as the main registry with a fallback to Google's mirror in case DockerHub goes down. You can change the default registry or add additional registries to the list, which become available at subdomains determined by their `name`.
+This is using `docker.io` as the main registry with a fallback to Google's mirror in case DockerHub goes down.
 
-See [the installation guide](./docs/installation.md) for deploying the Docker image or installing on Debian/Ubuntu and RHEL/CentOS.
+## Installation
 
-## Feature Highlights
+🐋 **Docker**
 
-- **Always up to date:** The requested artifact's manifest is checked for changes in the remote registry.
-- **Resilient:** Keep serving from cache and zero-error failover to mirrors.
-- **Push and pull:** Uploads are proxied through Varnish while downloads are streamed to the client and cached at the same time.
-- **Deploy anywhere:** Runs on pretty much any x86-based linux machine.
-- **Extensive artifact support**: Support for OCI, NPM, Git, Go, and many more.
-- **Automatic TLS:** Built-in ACME certificate resolver and updater.
-- **Observability:** Integrated OpenTelemetry metrics exporter.
-
-### Orca Premium:
-
-- **Cache private repositories:** Automatic access control integration for private repositories like Artifactory, Nexus, and Google Artifact Registry.
-- **Persisted cache:** Extend and persist the memory cache with Massive Storage Engine (MSE).
-- **OpenTelemetry Tracing:** Observe requests as they flow through your network.
-- **Programmable:** Apply your own logic to the request handling with Varnish Configuration Language (VCL).
-
-## Behind the scenes
-
-Varnish Orca is built with two distinct components:
-
-- **Varnish Enterprise**: [High performance](https://www.varnish-software.com/about-us/press/varnish-intel-achieve-breakthrough-in-cdn-efficiency/) cache and reverse proxy, written in C.
-- **Varnish Supervisor**: Control process and integration layer, written in go.
-
-The process tree looks like this: the `supervisor` starts `varnishd`, which in turn starts `cache-main`:
-
-```
-supervisor───varnishd───cache-main
+```sh
+docker pull varnish/orca
 ```
 
-Varnish Orca is a subsystem of the Supervisor containing all the logic needed to operate Varnish as a Virtual Registry. See the [virtual_registry](./docs/configuration/virtual-registry.md) configuration section for how to configure Virtual Registries.
+⎈ **Helm**
 
-## Why use a Virtual Registry?
+```sh
+helm pull oci://docker.io/varnish/orca-chart
+```
 
-**Developers** prefer using Virtual Registries because dependency downloads and CI Pipelines complete faster, meaning less waiting and less friction.
+Orca is also available as installable packages for Debian and RHEL based systems. See [the installation guide](./docs/installation.md).
 
-**Platform Engineers** deploy Virtual Registries because they scale to virtually any size, control exposure to the internet, and make migrating from one service to another easy.
+## Configuration
 
-**CTOs** choose Virtual Registries because they reduce egress fees, license costs, and increase developer productivity.
+Orca is configured with a YAML. The Orca-specific configuration can be found under the [virtual_registry](./docs/configuration/virtual-registry.md) configuration, while more general configuration have their own sections in the same file.
+
+Here is an example:
+
+```yaml
+varnish:
+  params:
+    workspace_backend: 128k
+  https:
+  - port: 443
+    certificates:
+    - cert: /path/to/cert.crt
+      private_key: /path/to/private.key
+otel:
+  service_name: orca
+  metrics:
+    endpoint: http://prometheus:9090/api/v1/otlp/v1/metrics
+virtual_registry:
+  registries:
+  - name: npmjs
+    default: true
+    remotes:
+    - url: https://registry.npmjs.org
+```
+
+For more options, see the full [configuration reference](./docs/configuration/README.md).
+
+## Documentation
+
+The documentation for Orca is currently hosted in this repo under [docs](./docs/README.md).
 
 ## License
 
-Each release of Varnish Orca has a free embedded license that lasts for one year after release date. To keep using Orca for free, you just have to upgrade Orca at least once per year.
+Each release of Varnish Orca has a free embedded license that lasts for one year after release date. To keep using Orca for free, you have to upgrade Orca at least once per year.
 
 If you have purchased a Premium license, see [instructions for installing the license](./docs/tutorials/license.md).
 
 ## Upgrade to Premium
 
-The cost model is simple: Varnish Orca is free to use for public registries, with a Premium edition supporting private registries and features like Persisted Cache, OpenTelemetry Tracing and programmability with VCL.
+Varnish Orca is free to use for public registries, with a Premium edition supporting private registries and features like Persisted Cache, OpenTelemetry Tracing and programmability with VCL.
 
 Contact orca@varnish-software.com for a quote.
 
