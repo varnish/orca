@@ -5,6 +5,14 @@ All notable changes to the `Varnish Supervisor` will be documented here. This in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.3] - 2025-12-17
+
+**Varnish version:** [6.0.16r8](https://docs.varnish-software.com/varnish-enterprise/changelog/#varnish-enterprise-6-0-16r8-2025-12-03)
+
+### Fixed
+
+- Loosen Varnish version license restrictions to ease installation from deb and rpm packages when a new version of `varnish-plus` is released. Each `varnish-supervisor` release targets a specific minimum version of Varnish, but it should be possible to use a newer version of `varnish-plus` than the minimum version.
+
 ## [0.6.2] - 2025-12-01
 
 **Varnish version:** [6.0.16r7](https://docs.varnish-software.com/varnish-enterprise/changelog/#varnish-enterprise-6-0-16r7-2025-11-24)
