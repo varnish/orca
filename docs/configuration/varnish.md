@@ -59,7 +59,7 @@ varnish:
   https:
   - port: 443
     certificates:
-    - self_singed: example.com
+    - self_signed: example.com
 ```
 
 The port number to listen to. If `address` is not also specified, varnish will listen on all available interfaces.
@@ -71,7 +71,7 @@ varnish:
   http:
   - address: 127.0.0.1:443
     certificates:
-    - self_singed: example.com
+    - self_signed: example.com
 ```
 
 The interface address to bind to. Can specify both address and port, or used in combination with `port`.
