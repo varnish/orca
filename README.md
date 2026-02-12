@@ -183,4 +183,4 @@ Contact orca@varnish-software.com for a quote.
 
 For the time being, both Varnish Supervisor and Varnish Enterprise are closed-source, but feel free to open an issue if you have any problems or suggestions.
 
-You can also contact us directly at orca@varnish-software.com.
+You can also contact us directly at orca@varnish-software.com
