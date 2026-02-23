@@ -5,6 +5,50 @@ All notable changes to the `Varnish Supervisor` will be documented here. This in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-02-23
+
+**Varnish version:** [6.0.16r10](https://docs.varnish-software.com/varnish-enterprise/changelog/#varnish-enterprise-6-0-16r10-2026-01-14)
+
+### Added
+
+- Added OTEL logs support via the `otel.logs` configuration block. Logs are exported to a configurable OTLP endpoint and do not require a license.
+
+- Added configurable trace sampling via the `otel.tracing.sampler` configuration option. Supported samplers: `always_on`, `always_off`, `traceidratio`, `parentbased_always_on`, `parentbased_always_off`, `parentbased_traceidratio`. Ratio-based samplers accept an `otel.tracing.sampler_arg` value between `0.0` and `1.0`.
+
+- Added a cache invalidation yKeys for resource types. All objects now get a `resource_manifest`, `resource_package` or `resource_other` key.
+
+**Varnish Orca**
+
+- Added `base_url` option to the virtual registry configuration. This is used whenever the proxy needs to rewrite a response header or body to direct the client back to the virtual registry.
+
+- Added policy for proxying JFrog UI.
+
+### Changed
+
+- Upgraded `varnish-otel` to v2.2.0, which adds trace sampling and OTEL logs support.
+
+- Remote endpoints are now resolved preemptively in `vcl_backend_fetch` using `utils.resolve_backend()`. The Host header is explicitly set based on the remote URL Host. This should not produce a noticeable change.
+
+- Improved cache policy for NPM traffic. All `/-/` endpoints are now marked uncacheable. Manifests are now always marked as must-revalidate, meaning they are not cached, but coalesced and candidates for 304 revalidation and stale-if-error.
+
+- Added stricter checking for undefined configuration options. This should make it easier to catch typos in the YAML config.
+
+- The `WWW-Authenticate` response header is now transparently rewritten when it directs the client to a different domain than the effective `base_url`. The original URL is preserved and used when the client comes back to authenticate. This enables auth when the upstream registry is not directly accessible by the client.
+
+- For `202 Created` responses, the `Location` header is also rewritten in the same fashion as `WWW-Authenticate`. This enables OCI uploads when the upstream registry is not directly accessible by the client.
+
+### Fixed
+
+- Fixed varnish-otel failing to find Varnish shared memory when workdir is not explicitly configured.
+
+- Fixed retrying requests when the load balancer has no remaining healthy and unused backends available.
+
+- Fixed a `beresp.ttl` + `req.ttl` interaction that resulted in objects marked as must-revalidate not being considered for 304 revalidation and stale-if-error.
+
+- Fixed an issue where OCI uploads would fail with a 404 because the registry returns different responses for HEAD and GET. HEAD requests from OCI clients are now proxied through without a lookup in cache.
+
+- Fixed IPv6 client IPs not being considered local for cache invalidation access.
+
 ## [0.6.3] - 2025-12-17
 
 **Varnish version:** [6.0.16r8](https://docs.varnish-software.com/varnish-enterprise/changelog/#varnish-enterprise-6-0-16r8-2025-12-03)
