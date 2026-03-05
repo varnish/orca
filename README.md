@@ -104,7 +104,7 @@ sys     0m0,022s
 
 The remaining time is consumed by the Docker daemon doing a single threaded decompression of each layer. This is done by the Docker daemon, which is why the `user` CPU seconds seems low here.
 
-This works because Orca's [default configuration](./docs/default-configuration.md) includes a Virtual Registry for DockerHub, which looks like this:
+This works because Orca's [default configuration](https://www.varnish-software.com/orca/docs/configuration/#default-configuration) includes a Virtual Registry for DockerHub, which looks like this:
 
 ```yaml
 virtual_registry:
@@ -132,11 +132,11 @@ docker pull varnish/orca
 helm pull oci://docker.io/varnish/orca-chart
 ```
 
-Orca is also available as installable packages for Debian and RHEL based systems. See [the installation guide](./docs/installation.md).
+Orca is also available as installable packages for Debian and RHEL based systems. See [the installation guide](https://www.varnish-software.com/orca/docs/installation/).
 
 ## Configuration
 
-Orca is configured with a YAML. The Orca-specific configuration can be found under the [virtual_registry](./docs/configuration/virtual-registry.md) configuration, while more general configuration have their own sections in the same file.
+Orca is configured with a YAML. The Orca-specific configuration can be found under the [virtual_registry](https://www.varnish-software.com/orca/docs/configuration/#virtual-registry) configuration, while more general configuration have their own sections in the same file.
 
 Here is an example:
 
@@ -161,17 +161,17 @@ virtual_registry:
     - url: https://registry.npmjs.org
 ```
 
-For more options, see the full [configuration reference](./docs/configuration/README.md).
+For more options, see the full [configuration reference](https://www.varnish-software.com/orca/docs/configuration/).
 
 ## Documentation
 
-The documentation for Orca is currently hosted in this repo under [docs](./docs/README.md).
+The documentation for Orca can be found here: https://www.varnish-software.com/orca/docs/.
 
 ## License
 
 Each release of Varnish Orca has a free embedded license that lasts for one year after release date. To keep using Orca for free, you have to upgrade Orca at least once per year.
 
-If you have purchased a Premium license, see [instructions for installing the license](./docs/tutorials/license.md).
+If you have purchased a Premium license, see [instructions for installing the license](https://www.varnish-software.com/orca/docs/tutorials/license).
 
 ## Upgrade to Premium
 
